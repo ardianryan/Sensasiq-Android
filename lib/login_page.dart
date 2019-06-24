@@ -19,14 +19,14 @@ class _LoginPageState extends State<LoginPage> {
   var username;
 
   Future<List> _login() async {
-    final response = await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
+    final response = await http.post("http://web2lab.000webhostapp.com/mhs", body: {
       "nim": nim.text,
       "password": pass.text,
     });
 
     var datauser = json.decode(response.body);
 
-    if((datauser['mahasiswa'][0]['nim']!=nim.text) & (datauser['mahasiswa'][0]['password']!=pass.text)/*datauser.length==0*/){
+    if(/*(datauser['mahasiswa'][0]['nim']!=nim.text) & (datauser['mahasiswa'][0]['password']!=pass.text)*/datauser.length==0){
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       }));
       */
       setState(() {
-        username=datauser['mahasiswa'][0]['nama_mahasiswa'];
+        username=datauser[0]['nama_mahasiswa'];
       });
     }
     return datauser;
