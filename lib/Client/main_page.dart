@@ -7,7 +7,8 @@ import 'package:sensasiq/Client/history.dart';
 class MainPage extends StatefulWidget {
 
   final String username;
-  MainPage({Key key, this.username}) : super(key: key);
+  final String nimnya;
+  MainPage({Key key, this.username, this.nimnya}) : super(key: key);
 
   @override
   HomePageState createState() {
@@ -56,8 +57,8 @@ class HomePageState extends State<MainPage> {
         child: new ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: new Text('Hai ${widget.username}'),
-              accountEmail: new Text('16.1.03.02.0000'),
+              accountName: new Text('${widget.username}'),
+              accountEmail: new Text('${widget.nimnya}'),
               currentAccountPicture: new GestureDetector(
                 child: new CircleAvatar(
                   backgroundColor: Colors.lightBlue,

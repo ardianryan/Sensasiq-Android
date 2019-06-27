@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController pass = new TextEditingController();
 
   var username;
+  var nimnya;
 
   Future<List> _login() async {
     final response =
@@ -66,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
             ));
       } else {
         var route = new MaterialPageRoute(
-          builder: (BuildContext context) => new MainPage(username: username),
+          builder: (BuildContext context) => new MainPage(username: username, nimnya: nimnya),
         );
         Navigator.of(context).pushReplacement(route);
         /*
@@ -76,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
         */
         setState(() {
           username = datauser['mahasiswa'][0]['nama_mahasiswa'];
+          nimnya = datauser['mahasiswa'][0]['nim'];
         });
       }
     }
