@@ -19,8 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   var nimnya;
 
   Future<List> _login() async {
-    final response =
-        await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
+    final response = await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
       "nim": nim.text,
     });
 
