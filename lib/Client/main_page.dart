@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:sensasiq/Client/history.dart';
+import 'package:sensasiq/Client/edit_akun.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -80,7 +81,11 @@ class HomePageState extends State<MainPage> {
               ),
             ),
             new InkWell(
-              onTap: (){},
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (test){
+                  return EditAkun();
+                }));
+              },
               child: new ListTile(
                 title: new Text('Edit Akun',),
                 leading: new Icon(Icons.account_circle),
