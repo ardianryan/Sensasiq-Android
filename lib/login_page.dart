@@ -12,21 +12,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  TextEditingController nim=new TextEditingController();
-  TextEditingController pass=new TextEditingController();
+  TextEditingController nim = new TextEditingController();
+  TextEditingController pass = new TextEditingController();
 
   var username;
 
   Future<List> _login() async {
-    final response = await http.post("http://web2lab.000webhostapp.com/mhs", body: {
+    final response =
+        await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
       "nim": nim.text,
-      "password": pass.text,
     });
 
     var datauser = json.decode(response.body);
 
-    if(/*(datauser['mahasiswa'][0]['nim']!=nim.text) & (datauser['mahasiswa'][0]['password']!=pass.text)*/datauser.length==0){
+    if (datauser['error']) {
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -45,20 +44,40 @@ class _LoginPageState extends State<LoginPage> {
                   child: new Text("OK"))
             ],
           ));
-    }else{
-      var route = new MaterialPageRoute(
-        builder: (BuildContext context) =>
-        new MainPage(username: username),
-      );
-      Navigator.of(context).pushReplacement(route);
-      /*
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return MainPage();
-      }));
-      */
-      setState(() {
-        username=datauser[0]['nama_mahasiswa'];
-      });
+    } else {
+      if (datauser['mahasiswa'][0]['password'] != pass.text) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            // ignore: deprecated_member_use
+            child: new CupertinoAlertDialog(
+              title: new Text("Gagal Masuk"),
+              content: new Text(
+                "Harap Periksa NIM & Password",
+                style: new TextStyle(fontSize: 16.0),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: new Text("OK"))
+              ],
+            ));
+      } else {
+        var route = new MaterialPageRoute(
+          builder: (BuildContext context) => new MainPage(username: username),
+        );
+        Navigator.of(context).pushReplacement(route);
+        /*
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return MainPage();
+        }));
+        */
+        setState(() {
+          username = datauser['mahasiswa'][0]['nama_mahasiswa'];
+        });
+      }
     }
     return datauser;
   }
@@ -85,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
       controller: nim,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
-      initialValue: '',
       decoration: InputDecoration(
         hintText: 'NIM',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -96,7 +114,6 @@ class _LoginPageState extends State<LoginPage> {
     final password = TextFormField(
       controller: pass,
       autofocus: false,
-      initialValue: '',
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Kata Sandi',

@@ -8,6 +8,7 @@ dependencies:
   http: any
   barcode_scan: ^1.0.0
   convert: ^2.1.1
+  crypto: any
 
 dev_dependencies:
   flutter_test:
