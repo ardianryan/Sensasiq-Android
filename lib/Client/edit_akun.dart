@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-TextEditingController passlama = new TextEditingController();
-TextEditingController passbaru = new TextEditingController();
-TextEditingController passbaru2 = new TextEditingController();
 class EditAkun extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    TextEditingController passlama = new TextEditingController();
+    TextEditingController passbaru = new TextEditingController();
+    TextEditingController passbaru2 = new TextEditingController();
     
     /*
     //Agar tidak bisa View Horizontal
