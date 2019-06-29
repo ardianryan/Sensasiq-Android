@@ -6,14 +6,7 @@ class EditAkun extends StatelessWidget {
     TextEditingController passlama = new TextEditingController();
     TextEditingController passbaru = new TextEditingController();
     TextEditingController passbaru2 = new TextEditingController();
-    
-    /*
-    //Agar tidak bisa View Horizontal
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    */
+
     final passwdlama = TextFormField(
       controller: passlama,
       autofocus: false,

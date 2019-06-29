@@ -7,9 +7,9 @@ import 'package:sensasiq/Client/edit_akun.dart';
 
 class MainPage extends StatefulWidget {
 
-  final String username;
+  final String namamhs;
   final String nimnya;
-  MainPage({Key key, this.username, this.nimnya}) : super(key: key);
+  MainPage({Key key, this.namamhs, this.nimnya}) : super(key: key);
 
   @override
   HomePageState createState() {
@@ -58,7 +58,7 @@ class HomePageState extends State<MainPage> {
         child: new ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: new Text('${widget.username}'),
+              accountName: new Text('${widget.namamhs}'),
               accountEmail: new Text('${widget.nimnya}'),
               currentAccountPicture: new GestureDetector(
                 child: new CircleAvatar(
