@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ));
     } else {
-      if (datauser['mahasiswa'][0]['password'] != pass.text) {
+      if (datauser['mahasiswa'][0]['password'] != pass.text || datauser['mahasiswa'][0]['nim'] != nim.text) {
         showDialog(
             context: context,
             barrierDismissible: false,
