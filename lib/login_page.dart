@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'mainPage.dart';
+import 'package:sensasiq/mainPage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => new _LoginPageState();
+}
+
+String generateMd5(String input) {
+  return md5.convert(utf8.encode(input)).toString();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -44,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ));
     } else {
-      if (datauser['mahasiswa'][0]['password'] != pass.text || datauser['mahasiswa'][0]['nim'] != nim.text) {
+      if (datauser['mahasiswa'][0]['password'] != generateMd5(pass.text) || datauser['mahasiswa'][0]['nim'] != nim.text) {
         showDialog(
             context: context,
             barrierDismissible: false,

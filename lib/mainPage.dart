@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+//import 'package:sensasiq/menu/scanPage.dart';
+//import 'package:sensasiq/menu/jadwalPage.dart';
+//import 'package:sensasiq/menu/riwayatPage.dart';
+//import 'package:sensasiq/menu/pengaturanPage.dart';
+//import 'package:sensasiq/menu/tentangPage.dart';
+//import 'package:sensasiq/menu/bantuanPage.dart';
 
 class MainPageState extends State<MainPage> {
   var title = '', indexMenu = 0;
