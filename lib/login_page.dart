@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
           child: new CupertinoAlertDialog(
             title: new Text("Gagal Masuk"),
             content: new Text(
-              "Harap Periksa NIM atau Password",
+              "Pengguna Tidak Ditemukan",
               style: new TextStyle(fontSize: 16.0),
             ),
             actions: <Widget>[
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
             child: new CupertinoAlertDialog(
               title: new Text("Gagal Masuk"),
               content: new Text(
-                "Harap Periksa NIM atau Password",
+                "Harap Periksa NIM\natau Kata Sandi",
                 style: new TextStyle(fontSize: 16.0),
               ),
               actions: <Widget>[
