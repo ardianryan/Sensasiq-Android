@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final email = TextFormField(
       controller: nim,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.number,
       autofocus: false,
       decoration: InputDecoration(
         hintText: 'Nomor Induk Mahasiswa',
