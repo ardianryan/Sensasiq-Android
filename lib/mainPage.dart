@@ -5,14 +5,32 @@ import 'dart:async';
 import 'dart:convert';
 
 class MainPageState extends State<MainPage> {
-  var title = 'Scan QR Absensi', indexMenu = 0, idqr, nip, androidVersions;
-  Future _lihatJadwal() async {
-    final responJadwal = await http.post("http://sensasiq.ml/sensasiq/api/jadwal/jadwal", body: {
-      "nim": widget.nimnya,
+  var title = 'Scan QR Absensi', indexMenu = 0, idqr, nip;
+
+  Future <List<Jadwal>> _getJadwal() async {
+    var jadwalRespon = await http.post('http://sensasiq.ml/sensasiq/api/jadwal/jadwal', body: {
+      "nim": widget.nimnya
     });
-    var datajadwal = json.decode(responJadwal.body);
-    this.androidVersions = [ "Mata Kuliah : "+datajadwal["jadwal"][0]["nama_matkul"]+" - Waktu : "+datajadwal["jadwal"][0]["waktu"]+" - Dosen : "+datajadwal["jadwal"][0]["nama_dosen"]];
+    var dataJadwal = json.decode(jadwalRespon.body);
+
+    List<Jadwal> jadwals = [];
+    for (var j in dataJadwal) {
+      Jadwal jadwal = Jadwal(j["nama_matkul"], j["waktu"], j["nama_dosen"]);
+      jadwals.add(jadwal);
+    }
+    print(jadwals.length);
+
+    return jadwals;
   }
+
+
+  //Future _lihatJadwal() async {
+  //  final responJadwal = await http.post("http://sensasiq.ml/sensasiq/api/jadwal/jadwal", body: {
+  //    "nim": widget.nimnya,
+  //  });
+  //  var datajadwal = json.decode(responJadwal.body);
+  //  this.androidVersions = [ "Mata Kuliah : "+datajadwal["jadwal"][0]["nama_matkul"]+" - Waktu : "+datajadwal["jadwal"][0]["waktu"]+" - Dosen : "+datajadwal["jadwal"][0]["nama_dosen"]];
+  //}
   String result = "Tekan Scan Untuk Memindai QR Code";
   Drawer _buildDrawer(context) {
     return new Drawer(
@@ -39,7 +57,6 @@ class MainPageState extends State<MainPage> {
             leading: new Icon(Icons.camera_alt),
             title: new Text('Scan QR Absensi'),
             onTap: (){
-              _lihatJadwal();
               setState(() {
                 this.title = 'QR Scanner';
                 this.indexMenu = 1;
@@ -186,17 +203,29 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
-          body: new ListView.separated(
-            separatorBuilder: (context, index){
-              return Divider(color: Colors.grey);
-            },
-            itemBuilder: (context, index){
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(this.androidVersions[index])
-              );
-            },
-            itemCount: this.androidVersions.length,
+          body: Container(
+            child: FutureBuilder(
+              future: _getJadwal(),
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.data == null){
+                  return Container(
+                    child: Center(
+                      child: Text("Memuat...")
+                    )
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return ListTile(
+                        title: Text("Mata Kuliah : "+snapshot.data[index].namamatkul ?? ''),
+                        subtitle: Text(snapshot.data[index].waktu+"\n Dosen : "+snapshot.data[index].namadosen ?? ''),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
           drawer: _buildDrawer(context),
         );
@@ -306,4 +335,9 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return new MainPageState();
   }
+}
+
+class Jadwal {
+  final String namamatkul, waktu, namadosen;
+  Jadwal(this.namamatkul, this.waktu, this.namadosen);
 }
