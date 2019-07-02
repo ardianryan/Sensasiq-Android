@@ -3,15 +3,16 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-//import 'package:sensasiq/menu/scanPage.dart';
-//import 'package:sensasiq/menu/jadwalPage.dart';
-//import 'package:sensasiq/menu/riwayatPage.dart';
-//import 'package:sensasiq/menu/pengaturanPage.dart';
-//import 'package:sensasiq/menu/tentangPage.dart';
-//import 'package:sensasiq/menu/bantuanPage.dart';
 
 class MainPageState extends State<MainPage> {
-  var title = 'Scan QR Absensi', indexMenu = 0, idqr, nip;
+  var title = 'Scan QR Absensi', indexMenu = 0, idqr, nip, androidVersions;
+  Future _lihatJadwal() async {
+    final responJadwal = await http.post("http://sensasiq.ml/sensasiq/api/jadwal/jadwal", body: {
+      "nim": widget.nimnya,
+    });
+    var datajadwal = json.decode(responJadwal.body);
+    this.androidVersions = [ "Mata Kuliah : "+datajadwal["jadwal"][0]["nama_matkul"]+" - Waktu : "+datajadwal["jadwal"][0]["waktu"]+" - Dosen : "+datajadwal["jadwal"][0]["nama_dosen"]];
+  }
   String result = "Tekan Scan Untuk Memindai QR Code";
   Drawer _buildDrawer(context) {
     return new Drawer(
@@ -38,6 +39,7 @@ class MainPageState extends State<MainPage> {
             leading: new Icon(Icons.camera_alt),
             title: new Text('Scan QR Absensi'),
             onTap: (){
+              _lihatJadwal();
               setState(() {
                 this.title = 'QR Scanner';
                 this.indexMenu = 1;
@@ -119,35 +121,36 @@ class MainPageState extends State<MainPage> {
     Future _scanQR() async {
       try {
         String qrResult = await BarcodeScanner.scan();
-        result = qrResult;
+        this.result = qrResult;
+          this.indexMenu = 1;
           final response = await http.post("http://sensasiq.ml/sensasiq/api/qr/cocok", body: {
            "qr": result,
           });
           var datauser = json.decode(response.body);
           if((datauser['error']) || (datauser['qr'][0]['qr']!=result)){
-            print(result = "Kode QR tidak valid!");
+            setState(() {
+              result = "Kode QR tidak valid!";
+            });
           } else {
+            this.indexMenu = null;
             nip = datauser['qr'][0]['nip'];
             final hasil = await http.post("http://sensasiq.ml/sensasiq/api/absen/add", body: {
               "id_jadwal": datauser['qr'][0]['qr'].split('-')[0],
               "id_qr": datauser['qr'][0]['id_qr'],
               "nim": widget.nimnya
             });
-            var userdata = json.decode(hasil.body);
-
-            if(userdata['status'] == 200){
-              print(result = "Berhasil Scan QR! Absen Berhasil!"); 
-            } else {
-              print(result = "Gagal Absen!"); 
-            } 
+            json.decode(hasil.body);
+            setState(() {
+              result = "Berhasil Scan QR! Absen Berhasil!";
+            });
           }
       } on FormatException {
         setState(() {
-          result = "Anda menekan tombol kembali sebelum memindai apa pun";
+          this.result = "Anda menekan tombol kembali sebelum memindai apa pun";
         });
       } catch (ex) {
         setState(() {
-          result = "Unknown Error $ex";
+          this.result = "Unknown Error $ex";
         });
       }
     }
@@ -183,12 +186,17 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
-          body: Center(
-            child: Text(
-              result,
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+          body: new ListView.separated(
+            separatorBuilder: (context, index){
+              return Divider(color: Colors.grey);
+            },
+            itemBuilder: (context, index){
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(this.androidVersions[index])
+              );
+            },
+            itemCount: this.androidVersions.length,
           ),
           drawer: _buildDrawer(context),
         );
@@ -271,12 +279,13 @@ class MainPageState extends State<MainPage> {
           body: Center(
             child: Text(
               result,
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
           drawer: _buildDrawer(context),
         );
+        break;
     }
   }
 }
@@ -292,7 +301,7 @@ class MainPage extends StatefulWidget {
     this.passwordnya
     }
   ) : super(key: key);
-
+  
   @override
   State<StatefulWidget> createState() {
     return new MainPageState();
