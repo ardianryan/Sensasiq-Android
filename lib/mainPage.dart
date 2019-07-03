@@ -175,20 +175,32 @@ class MainPageState extends State<MainPage> {
               this.colorSnackbar = 0xff4caf50;
               this.result = "Kata Sandi berhasil diperbarui!";
               _showSnackBar();
+              passlama.clear();
+            passbaru.clear();
+            passbaru2.clear();
             } else {
               this.colorSnackbar = 0xfff94040;
               this.result = "Gagal! Server tidak menanggapi!";
               _showSnackBar();
+              passlama.clear();
+            passbaru.clear();
+            passbaru2.clear();
             }
           } else {
             this.colorSnackbar = 0xfff94040;
             this.result = "Gagal! Harap periksa Kata Sandi baru!";
             _showSnackBar();
+            passlama.clear();
+            passbaru.clear();
+            passbaru2.clear();
           }
         } else {
           this.colorSnackbar = 0xfff94040;
           this.result = "Gagal! Kata Sandi lama tidak valid!";
           _showSnackBar();
+          passlama.clear();
+          passbaru.clear();
+          passbaru2.clear();
         }
       }
       return null;

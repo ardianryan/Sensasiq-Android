@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
               new FlatButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    pass.clear();
                   },
                   child: new Text("OK"))
             ],
@@ -64,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                 new FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
+                      pass.clear();
                     },
                     child: new Text("OK"))
               ],
