@@ -5,11 +5,12 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:package_info/package_info.dart';
 
 class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var title = '', indexMenu = 0, idqr, nip;
-  String result = "Selamat Datang di SENSASIQ APP";
+  String result = "Selamat Datang di SENSASIQ APP", version;
   int colorSnackbar;
   TextEditingController passlama = new TextEditingController();
   TextEditingController passbaru = new TextEditingController();
@@ -155,7 +156,9 @@ class MainPageState extends State<MainPage> {
   
 
   Widget build(BuildContext context) {
-
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      version = packageInfo.version;
+    });
     Future<List> _updatePass() async {
       if((passlama.text!=null) || (passbaru.text!=null) || (passbaru2.text!=null)){
         if(generateMd5(passlama.text)==widget.passwordnya){
@@ -509,7 +512,7 @@ class MainPageState extends State<MainPage> {
                   textAlign: TextAlign.left,
                 ),
                 new Text(
-                  "Version: 1.0-alpha",
+                  "Version: "+this.version,
                   style: TextStyle(
                     fontSize: 10.37, fontWeight: FontWeight.w300
                   ),
