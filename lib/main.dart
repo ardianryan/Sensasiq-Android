@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:sensasiq/login_page.dart';
 import 'package:sensasiq/launcher_view.dart';
 
 void main() => runApp(MyApp());

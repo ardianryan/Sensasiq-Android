@@ -8,7 +8,7 @@ import 'package:crypto/crypto.dart';
 
 class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var title = 'WELCOME', indexMenu = 0, idqr, nip;
+  var title = '', indexMenu = 0, idqr, nip;
   String result = "Selamat Datang di SENSASIQ APP";
   int colorSnackbar;
   TextEditingController passlama = new TextEditingController();
@@ -39,7 +39,7 @@ class MainPageState extends State<MainPage> {
 
     List<Riwayat> riwayats = [];
     for (var r in dataRiwayat) {
-      Riwayat riwayat = Riwayat(r["waktu"], r["nama_matkul"], r["nama_dosen"]);
+      Riwayat riwayat = Riwayat(r["nama_matkul"], r["waktu"], r["nama_dosen"]);
       riwayats.add(riwayat);
     }
     print(riwayats.length);
@@ -87,7 +87,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 this.title = 'Jadwal Kuliah';
                 this.indexMenu = 2;
-                this.result = "Ini halaman Jadwal";
               });
               Navigator.pop(context);
             },
@@ -99,7 +98,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 this.title = 'Riwayat Absensi';
                 this.indexMenu = 3;
-                this.result = "Ini halaman Riwayat";
               });
               Navigator.pop(context);
             },
@@ -111,7 +109,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 this.title = 'Pengaturan Akun';
                 this.indexMenu = 4;
-                this.result = "Ini halaman Pengaturan";
               });
               Navigator.pop(context);
             },
@@ -126,7 +123,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 this.title = 'Bantuan';
                 this.indexMenu = 5;
-                this.result = "Ini halaman Bantuan";
               });
               Navigator.pop(context);
             },
@@ -135,9 +131,8 @@ class MainPageState extends State<MainPage> {
             title: new Text('Tentang'),
             onTap: (){
               setState(() {
-                this.title = 'Tentang';
+                this.title = 'Tentang Aplikasi';
                 this.indexMenu = 6;
-                this.result = "Ini halaman Tentang";
               });
               Navigator.pop(context);
             },
@@ -267,7 +262,7 @@ class MainPageState extends State<MainPage> {
               result = "Kode QR tidak valid!";
             });
           } else {
-            this.indexMenu = null;
+            this.indexMenu = 7;
             nip = datauser['qr'][0]['nip'];
             final hasil = await http.post("http://sensasiq.ml/sensasiq/api/absen/add", body: {
               "id_jadwal": datauser['qr'][0]['qr'].split('-')[0],
@@ -335,9 +330,11 @@ class MainPageState extends State<MainPage> {
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index){
-                      return ListTile(
-                        title: Text("Mata Kuliah : "+snapshot.data[index].namamatkul ?? ''),
-                        subtitle: Text(snapshot.data[index].waktu+"\n Dosen : "+snapshot.data[index].namadosen ?? ''),
+                      return Card(
+                        child: ListTile(
+                          title: Text(snapshot.data[index].namamatkul ?? ''),
+                          subtitle: Text(snapshot.data[index].waktu+"\n Dosen : "+snapshot.data[index].namadosen ?? ''),
+                        ),
                       );
                     },
                   );
@@ -369,9 +366,11 @@ class MainPageState extends State<MainPage> {
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index){
-                      return ListTile(
-                        title: Text(snapshot.data[index].riwayatwaktu ?? ''),
-                        subtitle: Text(snapshot.data[index].riwayatmatkul+"\n Dosen : "+snapshot.data[index].riwayatdosen ?? ''),
+                      return Card(
+                        child: ListTile(
+                          title: Text(snapshot.data[index].riwayatwaktu ?? ''),
+                          subtitle: Text(snapshot.data[index].riwayatmatkul+"\n Dosen : "+snapshot.data[index].riwayatdosen ?? ''),
+                        ),
                       );
                     },
                   );
@@ -413,11 +412,59 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
-          body: Center(
-            child: Text(
-              result,
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+          body: new Center(
+            child: ListView(
+              padding: const EdgeInsets.all(50.0),
+              children: <Widget>[
+                new Image.asset(
+                  "assets/bantuan.png",
+                  height: 250.0,
+                  width: 300.0,
+                ),
+                SizedBox(height: 40.0),
+                new Text(
+                  "Layanan Bermasalah?",
+                  style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.w400
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "Pastikan beberapa hal berikut",
+                  style: TextStyle(
+                    fontSize: 25.0, fontWeight: FontWeight.w400
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "\n\n\u2022   Gadget wajib terhubung dengan internet melalui jaringan di Kampus Universitas Nusantara PGRI Kediri, kalian dapat menggunakan fasilitas WiFI pada Kampus.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                new Text(
+                  "\n\u2022   SENSASIQ APP memerlukan akses GPS, untuk itu harap menyalakan fitur GPS pada Gadget kalian.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                new Text(
+                  "\n\u2022   SENSASIQ APP memerlukan akses Kamera, untuk itu harap memberikan ijin penggunaan Kamera kepada aplikasi SENSASIQ.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                new Text(
+                  "\n\u2022   Akun hanya dapat digunakan pada satu Gadget saja dan tidak diperkenankan untuk melakukan Log In pada Gadget lain. Apabila akun bermasalah, silahkan hubungi pihak Program Studi masing - masing.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ] 
             ),
           ),
           drawer: _buildDrawer(context),
@@ -430,10 +477,68 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
+          body: new Center(
+            child: ListView(
+              padding: const EdgeInsets.all(50.0),
+              children: <Widget>[
+                new Image.asset(
+                  "assets/tentangMenu.png",
+                  height: 250.0,
+                  width: 300.0,
+                ),
+                SizedBox(height: 40.0),
+                new Text(
+                  "Apa itu SENSASIQ?",
+                  style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.w300
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "\n\nSolusi Absensi Cerdas Anti Curang Berbasis QR Code atau disingkat SENSASIQ merupakan  pengganti dari sistem absensi konvensional biasa yang memakan waktu karena antrian dan biaya untuk pengadaan lembar kertas absensi. Selain itu, SENSASIQ juga dibangun untuk mengurangi kecurangan terhadap absen dengan beberapa macam lapisan kemanan seperti pemanfaatan GPS serta alamat IP dari Gadget pengguna untuk pencocokan lokasi absen.",
+                  style: TextStyle(
+                    fontSize: 17.0, fontWeight: FontWeight.w300,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+                new Text(
+                  "\n\ncontact@sensasiq.ml",
+                  style: TextStyle(
+                    fontSize: 11.0, fontWeight: FontWeight.w300
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                new Text(
+                  "Version: 1.0-alpha",
+                  style: TextStyle(
+                    fontSize: 10.37, fontWeight: FontWeight.w300
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                new Text(
+                  "Copyleft © 2019 SENSASIQ.ML",
+                  style: TextStyle(
+                    fontSize: 10.0, fontWeight: FontWeight.w300
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ] 
+            ),
+          ),
+          drawer: _buildDrawer(context),
+        );
+        break;
+      case 7:
+        return new Scaffold(
+          appBar: new AppBar(
+            title: new Text(this.title),
+            centerTitle: true,
+          ),
+          // KONTEN
           body: Center(
             child: Text(
               result,
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
@@ -447,11 +552,38 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
-          body: Center(
-            child: Text(
-              result,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+          body: new Center(
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                new Text(
+                  "Selamat datang, "+widget.namamahasiswa+"!",
+                  style: TextStyle(
+                    fontSize: 30.0, fontWeight: FontWeight.w300
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Image.asset(
+                  "assets/landing.png",
+                  height: 300.0,
+                  width: 300.0,
+                ),
+                SizedBox(height: 40.0),
+                new Text(
+                  "SENSASIQ",
+                  style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.w100
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "Solusi Absensi Cerdas Anti Curang Berbasis QR Code",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ] 
             ),
           ),
           drawer: _buildDrawer(context),
@@ -485,7 +617,7 @@ String generateMd5(String input) {
 
 class Jadwal {
   final String namamatkul, waktu, namadosen;
-  Jadwal(this.namamatkul, this.waktu, this.namadosen);
+  Jadwal(this.waktu, this.namamatkul, this.namadosen);
 }
 
 class Riwayat {

@@ -1,5 +1,5 @@
 name: sensasiq
-description: Project Absensi QRCode Berbasis Android
+description: Solusi Absensi Cerdas Anti Curang Berbasis QR Code
 
 dependencies:
   flutter:
@@ -21,3 +21,6 @@ flutter:
     - assets/logo.png
     - assets/bg_profil.png
     - assets/tentang.png
+    - assets/landing.png
+    - assets/tentangMenu.png
+    - assets/bantuan.png
