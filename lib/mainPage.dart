@@ -23,7 +23,7 @@ class MainPageState extends State<MainPage> {
 
     List<Jadwal> jadwals = [];
     for (var j in dataJadwal) {
-      Jadwal jadwal = Jadwal(j["waktu"], j["nama_matkul"], j["nama_dosen"]);
+      Jadwal jadwal = Jadwal(j["nama_matkul"], j["waktu"], j["nama_dosen"]);
       jadwals.add(jadwal);
     }
     print(jadwals.length);
@@ -39,7 +39,7 @@ class MainPageState extends State<MainPage> {
 
     List<Riwayat> riwayats = [];
     for (var r in dataRiwayat) {
-      Riwayat riwayat = Riwayat(r["nama_matkul"], r["waktu"], r["nama_dosen"]);
+      Riwayat riwayat = Riwayat(r["waktu"], r["nama_matkul"], r["nama_dosen"]);
       riwayats.add(riwayat);
     }
     print(riwayats.length);
@@ -617,10 +617,10 @@ String generateMd5(String input) {
 
 class Jadwal {
   final String namamatkul, waktu, namadosen;
-  Jadwal(this.waktu, this.namamatkul, this.namadosen);
+  Jadwal(this.namamatkul, this.waktu, this.namadosen);
 }
 
 class Riwayat {
-  final String riwayatmatkul, riwayatwaktu, riwayatdosen;
+  final String riwayatwaktu, riwayatmatkul, riwayatdosen;
   Riwayat(this.riwayatwaktu, this.riwayatmatkul, this.riwayatdosen);
 }
