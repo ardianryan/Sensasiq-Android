@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensasiq/mainPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:device_info/device_info.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,8 +19,6 @@ String generateMd5(String input) {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-
   TextEditingController nim = new TextEditingController();
   TextEditingController pass = new TextEditingController();
 
@@ -26,7 +26,12 @@ class _LoginPageState extends State<LoginPage> {
   int colorSnackbar;
 
   Future<List> _login() async {
-    final response = await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
+    // Device ID
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    print('Running on ${androidInfo.androidId}');
+
+    final response = await http.post("http://192.168.12.1/sensasiq/api/mahasiswa", body: {
       "nim": nim.text,
     });
 
@@ -36,12 +41,14 @@ class _LoginPageState extends State<LoginPage> {
       this.colorSnackbar = 0xfff94040;
       this.result = "NIM tidak terdaftar!";
       _showSnackBar();
+      nim.clear();
       pass.clear();
     } else {
       if (datauser['mahasiswa'][0]['password'] != generateMd5(pass.text) || datauser['mahasiswa'][0]['nim'] != nim.text) {
         this.colorSnackbar = 0xfff94040;
         this.result = "Harap periksa NIM atau Kata Sandi!";
         _showSnackBar();
+        nim.clear();
         pass.clear();
       } else {
         var route = new MaterialPageRoute(
