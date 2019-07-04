@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensasiq/mainPage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
     // Device ID
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    print('Running on ${androidInfo.androidId}');
 
     final response = await http.post("http://192.168.12.1/sensasiq/api/mahasiswa", body: {
       "nim": nim.text,
@@ -51,18 +50,53 @@ class _LoginPageState extends State<LoginPage> {
         nim.clear();
         pass.clear();
       } else {
-        var route = new MaterialPageRoute(
-          builder: (BuildContext context) => new MainPage(namamahasiswa: namamahasiswa, nimnya: nimnya, passwordnya: passwordnya, deviceidnya: deviceidnya, kelasnya: kelasnya),
-        );
-        Navigator.of(context).pushReplacement(route);
-        setState(() {
-          namamahasiswa = datauser['mahasiswa'][0]['nama_mahasiswa'];
-          nimnya = datauser['mahasiswa'][0]['nim'];
-          passwordnya = datauser['mahasiswa'][0]['password'];
-          deviceidnya = datauser['mahasiswa'][0]['device_id'];
-          kelasnya = datauser['mahasiswa'][0]['kelas'];
-        });
-      }
+          if((datauser['mahasiswa'][0]['device_id'] != null) && (datauser['mahasiswa'][0]['device_id'] != androidInfo.androidId)){
+            this.colorSnackbar = 0xfff94040;
+            this.result = "NIM sudah terdaftar di perangkat lain!";
+            _showSnackBar();
+            nim.clear();
+            pass.clear();
+          } else {
+              if (datauser['mahasiswa'][0]['device_id'] == null) {
+                //INPUT DEVICE ID KE DB JIKA MASIH KOSONG
+                http.put("http://192.168.12.1/sensasiq/api/mahasiswa/device", body: {
+                  "nim": nim.text,
+                  "device_id": androidInfo.androidId
+                });
+                var route = new MaterialPageRoute(
+                  builder: (BuildContext context) => new MainPage(namamahasiswa: namamahasiswa, nimnya: nimnya, passwordnya: passwordnya, deviceidnya: deviceidnya, kelasnya: kelasnya),
+                );
+                Navigator.of(context).pushReplacement(route);
+                setState(() {
+                  namamahasiswa = datauser['mahasiswa'][0]['nama_mahasiswa'];
+                  nimnya = datauser['mahasiswa'][0]['nim'];
+                  passwordnya = datauser['mahasiswa'][0]['password'];
+                  deviceidnya = datauser['mahasiswa'][0]['device_id'];
+                  kelasnya = datauser['mahasiswa'][0]['kelas'];
+                });
+              } else {
+                if ((datauser['mahasiswa'][0]['device_id'] != null) && (datauser['mahasiswa'][0]['device_id'] == androidInfo.androidId)) {
+                  var route = new MaterialPageRoute(
+                    builder: (BuildContext context) => new MainPage(namamahasiswa: namamahasiswa, nimnya: nimnya, passwordnya: passwordnya, deviceidnya: deviceidnya, kelasnya: kelasnya),
+                  );
+                  Navigator.of(context).pushReplacement(route);
+                  setState(() {
+                    namamahasiswa = datauser['mahasiswa'][0]['nama_mahasiswa'];
+                    nimnya = datauser['mahasiswa'][0]['nim'];
+                    passwordnya = datauser['mahasiswa'][0]['password'];
+                    deviceidnya = datauser['mahasiswa'][0]['device_id'];
+                    kelasnya = datauser['mahasiswa'][0]['kelas'];
+                  });
+                } else {
+                  this.colorSnackbar = 0xfff94040;
+                  this.result = "Kesalahan tidak diketahui!";
+                  _showSnackBar();
+                  nim.clear();
+                  pass.clear();
+                }
+              }
+            }
+        } 
     }
     return null;
   }
