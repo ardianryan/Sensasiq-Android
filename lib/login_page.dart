@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensasiq/mainPage.dart';
@@ -17,10 +16,14 @@ String generateMd5(String input) {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
   TextEditingController nim = new TextEditingController();
   TextEditingController pass = new TextEditingController();
 
-  var namamahasiswa, nimnya, passwordnya, deviceidnya, kelasnya;
+  var namamahasiswa, nimnya, passwordnya, deviceidnya, kelasnya, result;
+  int colorSnackbar;
 
   Future<List> _login() async {
     final response = await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
@@ -30,46 +33,16 @@ class _LoginPageState extends State<LoginPage> {
     var datauser = json.decode(response.body);
 
     if (datauser['error']) {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          // ignore: deprecated_member_use
-          child: new CupertinoAlertDialog(
-            title: new Text("Gagal Masuk"),
-            content: new Text(
-              "Pengguna Tidak Ditemukan",
-              style: new TextStyle(fontSize: 16.0),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    pass.clear();
-                  },
-                  child: new Text("OK"))
-            ],
-          ));
+      this.colorSnackbar = 0xfff94040;
+      this.result = "NIM tidak terdaftar!";
+      _showSnackBar();
+      pass.clear();
     } else {
       if (datauser['mahasiswa'][0]['password'] != generateMd5(pass.text) || datauser['mahasiswa'][0]['nim'] != nim.text) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            // ignore: deprecated_member_use
-            child: new CupertinoAlertDialog(
-              title: new Text("Gagal Masuk"),
-              content: new Text(
-                "Harap Periksa NIM\natau Kata Sandi",
-                style: new TextStyle(fontSize: 16.0),
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      pass.clear();
-                    },
-                    child: new Text("OK"))
-              ],
-            ));
+        this.colorSnackbar = 0xfff94040;
+        this.result = "Harap periksa NIM atau Kata Sandi!";
+        _showSnackBar();
+        pass.clear();
       } else {
         var route = new MaterialPageRoute(
           builder: (BuildContext context) => new MainPage(namamahasiswa: namamahasiswa, nimnya: nimnya, passwordnya: passwordnya, deviceidnya: deviceidnya, kelasnya: kelasnya),
@@ -85,6 +58,15 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
     return null;
+  }
+
+  _showSnackBar(){
+    final snackBar =  new SnackBar(
+      content: new Text(this.result),
+      duration: new Duration(seconds: 5),
+      backgroundColor: Color(this.colorSnackbar),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -144,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
@@ -151,6 +134,15 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
             logo,
+            new Text(
+              "SENSASIQ APP",
+              style: TextStyle(
+                fontSize: 50.0, fontWeight: FontWeight.w100
+                ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 50.0),
+            
             SizedBox(height: 48.0),
             email,
             SizedBox(height: 8.0),

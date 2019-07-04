@@ -4,7 +4,6 @@ description: Solusi Absensi Cerdas Anti Curang Berbasis QR Code
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^0.1.0
   http: any
   barcode_scan: ^1.0.0
   convert: ^2.1.1

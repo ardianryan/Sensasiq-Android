@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:http/http.dart' as http;
@@ -174,15 +173,15 @@ class MainPageState extends State<MainPage> {
               this.result = "Kata Sandi berhasil diperbarui!";
               _showSnackBar();
               passlama.clear();
-            passbaru.clear();
-            passbaru2.clear();
+              passbaru.clear();
+              passbaru2.clear();
             } else {
               this.colorSnackbar = 0xfff94040;
               this.result = "Gagal! Server tidak menanggapi!";
               _showSnackBar();
               passlama.clear();
-            passbaru.clear();
-            passbaru2.clear();
+              passbaru.clear();
+              passbaru2.clear();
             }
           } else {
             this.colorSnackbar = 0xfff94040;
