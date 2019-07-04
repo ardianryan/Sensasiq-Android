@@ -16,7 +16,7 @@ class MainPageState extends State<MainPage> {
   TextEditingController passbaru2 = new TextEditingController();
 
   Future <List<Jadwal>> _getJadwal() async {
-    var jadwalRespon = await http.post('http://192.168.12.1/sensasiq/api/jadwal/jadwal', body: {
+    var jadwalRespon = await http.post('http://sensasiq.ml/sensasiq/api/jadwal/jadwal', body: {
       "nim": widget.nimnya
     });
     var dataJadwal = json.decode(jadwalRespon.body);
@@ -32,7 +32,7 @@ class MainPageState extends State<MainPage> {
   }
 
   Future <List<Riwayat>> _getRiwayat() async {
-    var riwayatRespon = await http.post('http://192.168.12.1/sensasiq/api/absen/absen', body: {
+    var riwayatRespon = await http.post('http://sensasiq.ml/sensasiq/api/absen/absen', body: {
       "nim": widget.nimnya
     });
     var dataRiwayat = json.decode(riwayatRespon.body);
@@ -162,7 +162,7 @@ class MainPageState extends State<MainPage> {
       if((passlama.text!=null) || (passbaru.text!=null) || (passbaru2.text!=null)){
         if(generateMd5(passlama.text)==widget.passwordnya){
           if(passbaru.text == passbaru2.text){
-            final responUpdatePass = await http.put("http://192.168.12.1/sensasiq/api/mahasiswa/update", body: {
+            final responUpdatePass = await http.put("http://sensasiq.ml/sensasiq/api/mahasiswa/update", body: {
               "nim": widget.nimnya,
               "password" : generateMd5(passbaru.text)
             });
@@ -255,7 +255,7 @@ class MainPageState extends State<MainPage> {
         String qrResult = await BarcodeScanner.scan();
         this.result = qrResult;
           this.indexMenu = 1;
-          final response = await http.post("http://192.168.12.1/sensasiq/api/qr/cocok", body: {
+          final response = await http.post("http://sensasiq.ml/sensasiq/api/qr/cocok", body: {
            "qr": result,
           });
           var datauser = json.decode(response.body);
@@ -266,7 +266,7 @@ class MainPageState extends State<MainPage> {
           } else {
             this.indexMenu = 7;
             nip = datauser['qr'][0]['nip'];
-            final hasil = await http.post("http://192.168.12.1/sensasiq/api/absen/add", body: {
+            final hasil = await http.post("http://sensasiq.ml/sensasiq/api/absen/add", body: {
               "id_jadwal": datauser['qr'][0]['qr'].split('-')[0],
               "id_qr": datauser['qr'][0]['id_qr'],
               "nim": widget.nimnya

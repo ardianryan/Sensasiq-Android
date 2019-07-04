@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
-    final response = await http.post("http://192.168.12.1/sensasiq/api/mahasiswa", body: {
+    final response = await http.post("http://sensasiq.ml/sensasiq/api/mahasiswa", body: {
       "nim": nim.text,
     });
 
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
           } else {
               if (datauser['mahasiswa'][0]['device_id'] == null) {
                 //INPUT DEVICE ID KE DB JIKA MASIH KOSONG
-                http.put("http://192.168.12.1/sensasiq/api/mahasiswa/device", body: {
+                http.put("http://sensasiq.ml/sensasiq/api/mahasiswa/device", body: {
                   "nim": nim.text,
                   "device_id": androidInfo.androidId
                 });

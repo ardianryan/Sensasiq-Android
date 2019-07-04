@@ -1,4 +1,4 @@
-package com.sentot.sensasiq
+package com.inotek.sensasiq
 
 import android.os.Bundle
 
