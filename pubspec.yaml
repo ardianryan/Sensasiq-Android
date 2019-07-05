@@ -25,3 +25,5 @@ flutter:
     - assets/landing.png
     - assets/tentangMenu.png
     - assets/bantuan.png
+    - assets/berhasilAbsen.png
+    - assets/gagalAbsen.png

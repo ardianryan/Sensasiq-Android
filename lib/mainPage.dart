@@ -261,20 +261,40 @@ class MainPageState extends State<MainPage> {
           var datauser = json.decode(response.body);
           if((datauser['error']) || (datauser['qr'][0]['qr']!=result)){
             setState(() {
-              result = "Kode QR tidak valid!";
+              this.indexMenu = 8;
             });
           } else {
-            this.indexMenu = 7;
-            nip = datauser['qr'][0]['nip'];
-            final hasil = await http.post("http://sensasiq.ml/sensasiq/api/absen/add", body: {
-              "id_jadwal": datauser['qr'][0]['qr'].split('-')[0],
-              "id_qr": datauser['qr'][0]['id_qr'],
-              "nim": widget.nimnya
+            idqr = datauser['qr'][0]['id_qr'];
+            var idjadwal = datauser['qr'][0]['qr'].split('-')[0];
+            final responCekAbsen = await http.post("http://sensasiq.ml/sensasiq/api/absen/cekabsen", body: {
+              "nim" : widget.nimnya,
+              "id_qr" : idqr,
+              "id_jadwal" : idjadwal
             });
-            json.decode(hasil.body);
-            setState(() {
-              result = "Berhasil Scan QR! Absen Berhasil!";
-            });
+            var dataCekAbsen = json.decode(responCekAbsen.body);
+
+            if(!dataCekAbsen['error']){
+              setState(() {
+                this.indexMenu = 8;
+              });
+            } else {
+              if(!datauser['error'] && datauser['qr'][0]['qr']==result && dataCekAbsen['error']){
+                nip = datauser['qr'][0]['nip'];
+                final hasil = await http.post("http://sensasiq.ml/sensasiq/api/absen/add", body: {
+                  "id_jadwal": datauser['qr'][0]['qr'].split('-')[0],
+                  "id_qr": datauser['qr'][0]['id_qr'],
+                  "nim": widget.nimnya
+                });
+                json.decode(hasil.body);
+                setState(() {
+                  this.indexMenu = 7;
+                });
+              } else {
+                setState(() {
+                  this.indexMenu = 8;
+                });
+              }
+            } 
           }
       } on FormatException {
         setState(() {
@@ -282,6 +302,7 @@ class MainPageState extends State<MainPage> {
         });
       } catch (ex) {
         setState(() {
+          this.indexMenu = 8;
           this.result = "Unknown Error $ex";
         });
       }
@@ -325,7 +346,7 @@ class MainPageState extends State<MainPage> {
                 if(snapshot.data == null){
                   return Container(
                     child: Center(
-                      child: Text("Memuat...")
+                      child: Text("Jadwal tidak tersedia.")
                     )
                   );
                 } else {
@@ -361,7 +382,7 @@ class MainPageState extends State<MainPage> {
                 if(snapshot.data == null){
                   return Container(
                     child: Center(
-                      child: Text("Memuat...")
+                      child: Text("Riwayat tidak tersedia.")
                     )
                   );
                 } else {
@@ -537,13 +558,78 @@ class MainPageState extends State<MainPage> {
             centerTitle: true,
           ),
           // KONTEN
-          body: Center(
-            child: Text(
-              result,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+          body: new Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(50.0),
+              children: <Widget>[
+                new Image.asset(
+                  "assets/berhasilAbsen.png",
+                  height: 250.0,
+                  width: 300.0,
+                ),
+                SizedBox(height: 40.0),
+                new Text(
+                  "Sukses!",
+                  style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "\nQR Code berhasil dipindai. Kamu telah melakukan absensi.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w300,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ] 
             ),
           ),
+          drawer: _buildDrawer(context),
+        );
+        break;
+      case 8:
+        return new Scaffold(
+          appBar: new AppBar(
+            title: new Text(this.title),
+            centerTitle: true,
+          ),
+          // KONTEN
+          body: new Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(50.0),
+              children: <Widget>[
+                new Image.asset(
+                  "assets/gagalAbsen.png",
+                  height: 250.0,
+                  width: 300.0,
+                ),
+                SizedBox(height: 40.0),
+                new Text(
+                  "Gagal!",
+                  style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.w200
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                new Text(
+                  "\nSudah pernah absen pada jadwal ini\natau QR Code tidak valid.",
+                  style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w300,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ] 
+            ),
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            icon: Icon(Icons.camera_alt),
+            label: Text("Scan",style: new TextStyle(fontWeight: FontWeight.bold)),
+            onPressed: _scanQR,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           drawer: _buildDrawer(context),
         );
         break;
